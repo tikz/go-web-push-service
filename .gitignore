@@ -1,2 +1,2 @@
 *.gob
-go-web-push*
+/go-web-push*
