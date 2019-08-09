@@ -63,7 +63,7 @@ func main() {
 	certManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist(os.Getenv("WEB_PUSH_SERVICE_DOMAIN")),
-		Cache:      autocert.DirCache("cache-path"),
+		Cache:      autocert.DirCache("cache/"),
 	}
 	server := &http.Server{
 		Addr: ":https",
