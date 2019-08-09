@@ -8,6 +8,7 @@ Type=simple
 WorkingDirectory=/home/user/go-web-push-service
 ExecStart=/home/user
 StandardInput=tty-force
+Environment=WEB_PUSH_SERVICE_DOMAIN=domain.com
 
 [Install]
 WantedBy=multi-user.target
