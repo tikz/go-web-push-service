@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -62,6 +63,8 @@ func main() {
 	http.HandleFunc("/publicKey", publicKey)
 	http.HandleFunc("/send", send)
 
-	listener := autocert.NewListener(os.Getenv("WEB_PUSH_SERVICE_DOMAIN"))
+	domain := os.Getenv("WEB_PUSH_SERVICE_DOMAIN")
+	fmt.Println("Serving ", domain)
+	listener := autocert.NewListener(domain)
 	log.Fatal(http.Serve(listener, nil))
 }
