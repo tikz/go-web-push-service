@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	webpush "github.com/SherClockHolmes/webpush-go"
+	"golang.org/x/crypto/acme/autocert"
 )
 
 const channelFile = "./channel.gob"
@@ -60,5 +62,6 @@ func main() {
 	http.HandleFunc("/publicKey", publicKey)
 	http.HandleFunc("/send", send)
 
-	log.Fatal(http.ListenAndServe("0.0.0.0:8888", nil))
+	listener := autocert.NewListener(os.Getenv("WEB_PUSH_SERVICE_DOMAIN"))
+	log.Fatal(http.Serve(listener, nil))
 }
