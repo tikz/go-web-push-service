@@ -1,11 +1,14 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	webpush "github.com/SherClockHolmes/webpush-go"
+	"golang.org/x/crypto/acme"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -57,12 +60,22 @@ func publicKey(w http.ResponseWriter, r *http.Request) {
 func main() {
 	loadChannel()
 
+	certManager := autocert.Manager{
+		Prompt:     autocert.AcceptTOS,
+		HostPolicy: autocert.HostWhitelist(os.Getenv("WEB_PUSH_SERVICE_DOMAIN")),
+		Cache:      autocert.DirCache("cache-path"),
+	}
+	server := &http.Server{
+		Addr: ":https",
+		TLSConfig: &tls.Config{
+			GetCertificate: certManager.GetCertificate,
+			NextProtos:     []string{acme.ALPNProto},
+		},
+	}
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/subscribe", subscribe)
 	http.HandleFunc("/publicKey", publicKey)
 	http.HandleFunc("/send", send)
-	listener := autocert.NewListener("yourdomain.com")
-	log.Fatal(http.Serve(listener, nil))
 
 	go func() {
 		h := certManager.HTTPHandler(nil)
